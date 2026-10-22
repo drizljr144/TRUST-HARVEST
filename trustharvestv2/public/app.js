@@ -47,12 +47,12 @@ function photo(crop) {
 }
 
 const SLIDES = [
-  ['hero1', 'Sell produce. Get paid. Every time.', 'Buyer money is held safely until delivery is confirmed.', 'A smiling tomato farmer with baskets of harvest'],
-  ['hero2', 'From the farm gate to the buyer, safely.', 'Track every order from payment to delivery.', 'A man leading a donkey with a load past a warehouse'],
-  ['hero3', 'Every harvest deserves its full price.', 'No more chasing buyers for your money.', 'Hands gripping a wooden pestle over harvested grain'],
-  ['hero4', 'Grow more. Get paid faster.', 'Verified buyers and protected payments.', 'A farmer walking through rows of vines in a greenhouse'],
-  ['hero5', 'Market day, without the middleman\u2019s cut.', 'Sell directly to buyers across Plateau.', 'A trader sorting okra at an open-air market'],
-  ['hero6', 'Trust is the first thing we harvest.', 'Every completed trade builds your trust score.', 'A farmer in his field holding fresh tomatoes']
+  ['hero1', 'Sell produce. Get paid. Every time.', 'Buyer money is held safely until delivery is confirmed.', 'A smiling tomato farmer with baskets of harvest', '50% 30%'],
+  ['hero2', 'From the farm gate to the buyer, safely.', 'Track every order from payment to delivery.', 'A man leading a donkey with a load past a warehouse', '75% 50%'],
+  ['hero3', 'Every harvest deserves its full price.', 'No more chasing buyers for your money.', 'Hands gripping a wooden pestle over harvested grain', '55% 50%'],
+  ['hero4', 'Grow more. Get paid faster.', 'Verified buyers and protected payments.', 'A farmer walking through rows of vines in a greenhouse', '45% 40%'],
+  ['hero5', 'Market day, without the middleman\u2019s cut.', 'Sell directly to buyers across Plateau.', 'A trader sorting okra at an open-air market', '50% 35%'],
+  ['hero6', 'Trust is the first thing we harvest.', 'Every completed trade builds your trust score.', 'A farmer in his field holding fresh tomatoes', '45% 30%']
 ];
 let slideTimer = null;
 function stopSlides() { clearInterval(slideTimer); slideTimer = null; }
@@ -60,28 +60,29 @@ function slideshow() {
   stopSlides();
   let i = 0;
   const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
-  const slides = SLIDES.map(([f, t, s, alt], n) => {
-    const img = h('img', { src: `/images/${f}.webp`, alt, loading: n === 0 ? 'eager' : 'lazy' });
-    return h('div', { class: 'slide' + (n === 0 ? ' on' : '') }, img);
+  const slides = SLIDES.map(([f, t, s, alt, position], n) => {
+    const img = h('img', { src: `/images/${f}.webp`, alt, loading: n === 0 ? 'eager' : 'lazy', style: `object-position:${position}` });
+    const cap = h('div', { class: 'cap', 'aria-live': n === 0 ? 'polite' : 'off' }, h('h1', {}, t), h('p', {}, s));
+    return h('div', { class: 'slide' + (n === 0 ? ' on' : ''), 'aria-hidden': n !== 0 }, h('div', { class: 'slide-photo' }, img), cap);
   });
-  const title = h('h1', {}, SLIDES[0][1]), sub = h('p', {}, SLIDES[0][2]);
-  const cap = h('div', { class: 'cap', 'aria-live': 'polite' }, title, sub);
   const bar = h('div', { class: 'bar' });
   const dots = SLIDES.map((_, n) => h('button', { 'aria-label': 'Show slide ' + (n + 1), onclick: () => go(n, true) }));
   function go(n, manual) {
     i = (n + SLIDES.length) % SLIDES.length;
-    slides.forEach((s, k) => s.classList.toggle('on', k === i));
+    slides.forEach((s, k) => {
+      s.classList.toggle('on', k === i);
+      s.setAttribute('aria-hidden', k !== i);
+      s.querySelector('.cap').setAttribute('aria-live', k === i ? 'polite' : 'off');
+    });
     dots.forEach((d, k) => d.classList.toggle('on', k === i));
-    title.textContent = SLIDES[i][1]; sub.textContent = SLIDES[i][2];
     const nxt = new Image(); nxt.src = `/images/${SLIDES[(i + 1) % SLIDES.length][0]}.webp`;
     bar.classList.remove('run'); void bar.offsetWidth;
     if (!reduce) { bar.classList.add('run'); if (manual) start(); }
   }
   const start = () => { stopSlides(); if (!reduce) slideTimer = setInterval(() => go(i + 1), 6000); };
   const box = h('section', { class: 'slides', 'aria-roledescription': 'carousel', 'aria-label': 'TrustHarvest highlights', tabindex: '0' },
-    slides, h('div', { class: 'arrow l' }), cap, bar, h('div', { class: 'dots' }, dots));
+    slides, bar, h('div', { class: 'dots' }, dots));
   const mk = (cls, txt, label, d) => h('button', { class: 'arrow ' + cls, 'aria-label': label, onclick: () => go(i + d, true) }, txt);
-  box.querySelectorAll('.arrow').forEach(e => e.remove());
   box.append(mk('l', '\u2039', 'Previous slide', -1), mk('r', '\u203a', 'Next slide', 1));
   box.addEventListener('mouseenter', stopSlides); box.addEventListener('mouseleave', start);
   box.addEventListener('keydown', e => { if (e.key === 'ArrowRight') go(i + 1, true); if (e.key === 'ArrowLeft') go(i - 1, true); });
