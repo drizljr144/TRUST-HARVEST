@@ -47,12 +47,12 @@ function photo(crop) {
 }
 
 const SLIDES = [
-  ['hero1', 'Sell produce. Get paid. Every time.', 'Buyer money is held safely until delivery is confirmed.', 'A smiling tomato farmer with baskets of harvest', '50% 30%'],
-  ['hero2', 'From the farm gate to the buyer, safely.', 'Track every order from payment to delivery.', 'A man leading a donkey with a load past a warehouse', '75% 50%'],
-  ['hero3', 'Every harvest deserves its full price.', 'No more chasing buyers for your money.', 'Hands gripping a wooden pestle over harvested grain', '55% 50%'],
-  ['hero4', 'Grow more. Get paid faster.', 'Verified buyers and protected payments.', 'A farmer walking through rows of vines in a greenhouse', '45% 40%'],
-  ['hero5', 'Market day, without the middleman\u2019s cut.', 'Sell directly to buyers across Plateau.', 'A trader sorting okra at an open-air market', '50% 35%'],
-  ['hero6', 'Trust is the first thing we harvest.', 'Every completed trade builds your trust score.', 'A farmer in his field holding fresh tomatoes', '45% 30%']
+  ['hero1', 'Sell produce. Get paid. Every time.', 'Buyer money is held safely until delivery is confirmed.', 'A smiling tomato farmer with baskets of harvest', '50% 30%', 'Get paid.'],
+  ['hero2', 'From the farm gate to the buyer, safely.', 'Track every order from payment to delivery.', 'A man leading a donkey with a load past a warehouse', '75% 50%', 'safely.'],
+  ['hero3', 'Every harvest deserves its full price.', 'No more chasing buyers for your money.', 'Hands gripping a wooden pestle over harvested grain', '55% 50%', 'full price.'],
+  ['hero4', 'Grow more. Get paid faster.', 'Verified buyers and protected payments.', 'A farmer walking through rows of vines in a greenhouse', '45% 40%', 'paid faster.'],
+  ['hero5', 'Market day, without the middleman\u2019s cut.', 'Sell directly to buyers across Plateau.', 'A trader sorting okra at an open-air market', '50% 35%', 'without the middleman\u2019s cut.'],
+  ['hero6', 'Trust is the first thing we harvest.', 'Every completed trade builds your trust score.', 'A farmer in his field holding fresh tomatoes', '45% 30%', 'Trust is the first thing we harvest.']
 ];
 let slideTimer = null;
 function stopSlides() { clearInterval(slideTimer); slideTimer = null; }
@@ -60,10 +60,31 @@ function slideshow() {
   stopSlides();
   let i = 0;
   const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
-  const slides = SLIDES.map(([f, t, s, alt, position], n) => {
+  const slides = SLIDES.map(([f, t, s, alt, position, keyPhrase], n) => {
     const img = h('img', { src: `/images/${f}.webp`, alt, loading: n === 0 ? 'eager' : 'lazy', style: `object-position:${position}` });
-    const cap = h('div', { class: 'cap', 'aria-live': n === 0 ? 'polite' : 'off' }, h('h1', {}, t), h('p', {}, s));
-    return h('div', { class: 'slide' + (n === 0 ? ' on' : ''), 'aria-hidden': n !== 0 }, h('div', { class: 'slide-photo' }, img), cap);
+    const phraseAt = t.indexOf(keyPhrase);
+    const title = h('h1', {}, t.slice(0, phraseAt), h('span', { class: 'hero-highlight' }, keyPhrase), t.slice(phraseAt + keyPhrase.length));
+    const actions = h('div', { class: 'hero-actions' },
+      h('button', { class: 'hero-cta primary', onclick: () => goToAuth(true) }, 'Create an account'),
+      h('button', { class: 'hero-cta secondary', onclick: () => goToAuth(false) }, 'Log in'));
+    const proof = h('div', { class: 'hero-proof' }, 'Verified farmers · Escrow-protected · Works on any phone');
+    const cap = h('div', { class: 'cap', 'aria-live': n === 0 ? 'polite' : 'off' }, title, h('p', {}, s), actions, proof);
+    const photo = h('div', { class: 'slide-photo' },
+      h('div', { class: 'slide-image' }, img),
+      h('div', { class: 'slide-thumbnails', 'aria-label': 'Choose a hero photo' }, SLIDES.map(([file, , , thumbnailAlt], thumbnailIndex) => {
+        const thumbnail = h('img', { src: `/images/${file}.webp`, alt: `Slide ${thumbnailIndex + 1}: ${thumbnailAlt}`, loading: 'lazy' });
+        return h('button', {
+          class: 'slide-thumbnail' + (thumbnailIndex === n ? ' on' : ''),
+          type: 'button',
+          'aria-label': `Show slide ${thumbnailIndex + 1}: ${thumbnailAlt}`,
+          'aria-current': thumbnailIndex === n ? 'true' : 'false',
+          disabled: n !== 0,
+          onclick: () => go(thumbnailIndex, true)
+        }, thumbnail);
+      })),
+      h('div', { class: 'hero-demo-card payment' }, h('b', {}, 'Payment held in escrow: ₦36,000'), h('small', {}, 'Demo')),
+      h('div', { class: 'hero-demo-card trust-score' }, h('b', {}, 'Trust score 92 · Verified farmer'), h('small', {}, 'Demo')));
+    return h('div', { class: 'slide' + (n === 0 ? ' on' : ''), 'aria-hidden': n !== 0 }, photo, cap);
   });
   const bar = h('div', { class: 'bar' });
   const dots = SLIDES.map((_, n) => h('button', { 'aria-label': 'Show slide ' + (n + 1), onclick: () => go(n, true) }));
@@ -73,8 +94,14 @@ function slideshow() {
       s.classList.toggle('on', k === i);
       s.setAttribute('aria-hidden', k !== i);
       s.querySelector('.cap').setAttribute('aria-live', k === i ? 'polite' : 'off');
+      s.querySelectorAll('.slide-thumbnail').forEach(thumbnail => { thumbnail.disabled = k !== i; });
     });
     dots.forEach((d, k) => d.classList.toggle('on', k === i));
+    slides.forEach(slide => slide.querySelectorAll('.slide-thumbnail').forEach((thumbnail, k) => {
+      const active = k === i;
+      thumbnail.classList.toggle('on', active);
+      thumbnail.setAttribute('aria-current', active ? 'true' : 'false');
+    }));
     const nxt = new Image(); nxt.src = `/images/${SLIDES[(i + 1) % SLIDES.length][0]}.webp`;
     bar.classList.remove('run'); void bar.offsetWidth;
     if (!reduce) { bar.classList.add('run'); if (manual) start(); }
@@ -92,21 +119,33 @@ function slideshow() {
   go(0); start();
   return box;
 }
+function goToAuth(create) {
+  const app = $('#app');
+  const toggleText = create ? 'Create an account' : 'I have an account';
+  const toggle = [...app.querySelectorAll('button')].find(button => button.textContent.trim() === toggleText);
+  if (toggle) toggle.click();
+  app.scrollIntoView();
+}
 
 const STEPS = [['Buyer pays into escrow', 'The money leaves the buyer and is held safely. Nobody can touch it yet.'],
   ['Farmer delivers', 'The farmer marks the order delivered once the produce reaches the buyer.'],
   ['Payment is released', 'The buyer confirms and the money goes straight to the farmer\u2019s wallet.']];
 function landing() {
   return h('div', {},
-    h('h2', {}, 'How escrow protects you'),
-    h('div', { class: 'steps' }, STEPS.map(([t, d], n) => h('div', { class: 'card' }, h('b', {}, (n + 1) + '. ' + t), h('span', { class: 'mute' }, d)))),
-    h('h2', {}, 'What farmers sell here'),
-    h('div', { class: 'strip' }, [['tomatoes', 'Tomatoes'], ['potatoes', 'Potatoes'], ['yam', 'Yam'], ['maize', 'Maize'], ['pepper', 'Pepper'], ['onions', 'Onions']].map(([f, n]) => {
-      const d = h('div', {}, h('img', { src: `/images/${f}.webp`, alt: n, loading: 'lazy' }), h('span', {}, n));
-      d.querySelector('img').addEventListener('error', () => d.remove()); return d; })),
-    h('h2', {}, 'Your trust score'),
-    h('div', { class: 'card' }, 'Every completed trade raises your score. Disputes and cancelled orders lower it. A high score tells buyers and farmers they can trade with you.'),
-    h('p', { class: 'mute' }, 'Demo: payments are simulated. Built for HackJos 2026.'));
+    h('section', { class: 'landing-section' },
+      h('h2', {}, 'How escrow protects you'),
+      h('div', { class: 'steps' }, STEPS.map(([t, d], n) => h('div', { class: 'card' }, h('b', {}, (n + 1) + '. ' + t), h('span', { class: 'mute' }, d)))),
+    ),
+    h('section', { class: 'landing-section' },
+      h('h2', {}, 'What farmers sell here'),
+      h('div', { class: 'strip' }, [['tomatoes', 'Tomatoes'], ['potatoes', 'Potatoes'], ['yam', 'Yam'], ['maize', 'Maize'], ['pepper', 'Pepper'], ['onions', 'Onions']].map(([f, n]) => {
+        const d = h('div', {}, h('img', { src: `/images/${f}.webp`, alt: n, loading: 'lazy' }), h('span', {}, n));
+        d.querySelector('img').addEventListener('error', () => d.remove()); return d; })),
+    ),
+    h('section', { class: 'landing-section' },
+      h('h2', {}, 'Your trust score'),
+      h('div', { class: 'card' }, 'Every completed trade raises your score. Disputes and cancelled orders lower it. A high score tells buyers and farmers they can trade with you.'),
+      h('p', { class: 'mute' }, 'Demo: payments are simulated. Built for HackJos 2026.')));
 }
 
 function authView() {
