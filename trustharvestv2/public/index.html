@@ -13,7 +13,9 @@
 *{box-sizing:border-box}
 body{margin:0;background:var(--leaf-50);color:var(--leaf-900);font:17px/1.5 "Avenir Next","Segoe UI",system-ui,sans-serif}
 header{background:var(--leaf-900);color:#fff;padding:14px 18px;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:5}
-header b{font-size:20px;letter-spacing:.2px}
+header .brand{display:inline-flex;align-items:center;gap:10px;color:inherit;text-decoration:none}
+header .brand img{width:32px;height:32px;border-radius:8px;flex:none}
+header .brand b{font-size:20px;letter-spacing:.2px}
 header b i{font-style:normal;color:var(--leaf-100)}
 main{max-width:720px;margin:0 auto;padding:16px 16px 90px;background:var(--leaf-50)}
 #hero{position:relative}
@@ -143,7 +145,7 @@ footer{background:var(--leaf-900);color:#fff}
 </style>
 </head>
 <body>
-<header><b>Trust<i>Harvest</i></b><span id="who" class="mute" style="color:var(--leaf-100)"></span></header>
+<header><a class="brand" href="/" aria-label="TrustHarvest home"><img src="/favicon.svg" alt="" width="32" height="32"><b>Trust<i>Harvest</i></b></a><span id="who" class="mute" style="color:var(--leaf-100)"></span></header>
 <div id="hero"></div>
 <main id="app"></main>
 <nav id="nav" hidden></nav>
