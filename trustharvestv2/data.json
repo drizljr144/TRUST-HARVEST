@@ -5,7 +5,7 @@
       "name": "Admin",
       "phone": "0800000000",
       "role": "admin",
-      "pass": "$2a$08$ZygqKnZTaeld8yoWIc32GeClnQ96TfIra4DtovhCNpwCiUSWF6qi6",
+      "pass": "$2a$08$spOsPZEdV7Q2/xBxYtArKuxFvH1dlgTUPIjPsI5cGDXGwDHaek6ke",
       "verified": true,
       "wallet": 0,
       "trades": 0,
@@ -17,7 +17,7 @@
       "name": "Musa Danjuma",
       "phone": "0803000001",
       "role": "farmer",
-      "pass": "$2a$08$Q3H/Say2POGNI/HYhWQkOem9xiTcQJRfOMu5JnqU5LC.do.YYZyFC",
+      "pass": "$2a$08$h6ANw6JZK6RQGZOxwY6P7u6o9Vzt2QkPN.TjzA6EYqbQOPXEc.Nly",
       "verified": true,
       "wallet": 0,
       "trades": 4,
@@ -29,7 +29,7 @@
       "name": "Ngozi Eze",
       "phone": "0803000002",
       "role": "farmer",
-      "pass": "$2a$08$Mh8BtEVqN4SnCrs5GI4vLevOm6zsEhrhGK2hKcmUbA4oGo5uT0qqm",
+      "pass": "$2a$08$E9vQZSX8tXqEqmNpAh4toelTUED5iU0.bda9Pqr8cPuvZHYD7LvcO",
       "verified": false,
       "wallet": 0,
       "trades": 0,
@@ -41,10 +41,22 @@
       "name": "Chidi Foods Ltd",
       "phone": "0803000003",
       "role": "buyer",
-      "pass": "$2a$08$GH.Q97jxu2MXuOStd0eiveHJqVp.4YRfgdywJigbDDJftjVyosjzu",
+      "pass": "$2a$08$Zc..huT1vWmlDNYK/A5vM.S.kate32BrxVFcOE.MTK0dOYd9Yy2Lu",
       "verified": true,
       "wallet": 500000,
       "trades": 2,
+      "disputes": 0,
+      "cancels": 0
+    },
+    {
+      "id": 11,
+      "name": "Amina Bello",
+      "phone": "0803000004",
+      "role": "agent",
+      "pass": "$2a$08$y/RBG1fyltvpdcHVPClr3OotgKFwHrbOTMi9yZvX3ZwipIwc37IaW",
+      "verified": true,
+      "wallet": 0,
+      "trades": 3,
       "disputes": 0,
       "cancels": 0
     }
@@ -109,9 +121,233 @@
       "price": 22000,
       "loc": "Jos South",
       "open": true
+    },
+    {
+      "id": 20,
+      "farmer": 2,
+      "crop": "Tomatoes",
+      "qty": 40,
+      "unit": "baskets",
+      "price": 15300,
+      "loc": "Plateau",
+      "open": true,
+      "batch": 19
     }
   ],
   "orders": [],
   "audit": [],
-  "seq": 11
+  "seq": 27,
+  "batches": [
+    {
+      "id": 12,
+      "owner": 2,
+      "crop": "tomato",
+      "qty": 20,
+      "unit": "baskets",
+      "farmer": "Musa Danjuma",
+      "harvested": "2026-09-27T16:39:05.567Z",
+      "storage": "open",
+      "listing": null,
+      "sales": [
+        {
+          "days": 2.2,
+          "qty": 20,
+          "at": "2026-10-26T16:39:05.568Z"
+        }
+      ]
+    },
+    {
+      "id": 13,
+      "owner": 2,
+      "crop": "tomato",
+      "qty": 15,
+      "unit": "baskets",
+      "farmer": "Musa Danjuma",
+      "harvested": "2026-09-27T16:39:05.568Z",
+      "storage": "open",
+      "listing": null,
+      "sales": [
+        {
+          "days": 1.8,
+          "qty": 15,
+          "at": "2026-10-26T16:39:05.568Z"
+        }
+      ]
+    },
+    {
+      "id": 14,
+      "owner": 2,
+      "crop": "tomato",
+      "qty": 30,
+      "unit": "baskets",
+      "farmer": "Musa Danjuma",
+      "harvested": "2026-09-27T16:39:05.568Z",
+      "storage": "cooler",
+      "listing": null,
+      "sales": [
+        {
+          "days": 6.8,
+          "qty": 30,
+          "at": "2026-10-26T16:39:05.568Z"
+        }
+      ]
+    },
+    {
+      "id": 15,
+      "owner": 2,
+      "crop": "tomato",
+      "qty": 18,
+      "unit": "baskets",
+      "farmer": "Musa Danjuma",
+      "harvested": "2026-09-27T16:39:05.568Z",
+      "storage": "shade",
+      "listing": null,
+      "sales": [
+        {
+          "days": 4.5,
+          "qty": 18,
+          "at": "2026-10-26T16:39:05.568Z"
+        }
+      ]
+    },
+    {
+      "id": 16,
+      "owner": 2,
+      "crop": "pepper",
+      "qty": 12,
+      "unit": "baskets",
+      "farmer": "Musa Danjuma",
+      "harvested": "2026-09-27T16:39:05.568Z",
+      "storage": "shade",
+      "listing": null,
+      "sales": [
+        {
+          "days": 5.5,
+          "qty": 12,
+          "at": "2026-10-26T16:39:05.568Z"
+        }
+      ]
+    },
+    {
+      "id": 17,
+      "owner": 2,
+      "crop": "onion",
+      "qty": 25,
+      "unit": "bags",
+      "farmer": "Musa Danjuma",
+      "harvested": "2026-09-17T16:39:05.568Z",
+      "storage": "open",
+      "listing": null,
+      "sales": [
+        {
+          "days": 9.5,
+          "qty": 25,
+          "at": "2026-10-26T16:39:05.568Z"
+        }
+      ]
+    },
+    {
+      "id": 18,
+      "owner": 2,
+      "crop": "onion",
+      "qty": 20,
+      "unit": "bags",
+      "farmer": "Musa Danjuma",
+      "harvested": "2026-09-17T16:39:05.568Z",
+      "storage": "shade",
+      "listing": null,
+      "sales": [
+        {
+          "days": 28,
+          "qty": 20,
+          "at": "2026-10-26T16:39:05.568Z"
+        }
+      ]
+    },
+    {
+      "id": 19,
+      "owner": 2,
+      "crop": "tomato",
+      "qty": 40,
+      "unit": "baskets",
+      "farmer": "Musa Danjuma",
+      "harvested": "2026-10-25T14:15:05.568Z",
+      "storage": "open",
+      "listing": 20,
+      "sales": []
+    },
+    {
+      "id": 21,
+      "owner": 2,
+      "crop": "pepper",
+      "qty": 20,
+      "unit": "baskets",
+      "farmer": "Musa Danjuma",
+      "harvested": "2026-10-27T11:51:05.569Z",
+      "storage": "cooler",
+      "listing": null,
+      "sales": []
+    },
+    {
+      "id": 22,
+      "owner": 2,
+      "crop": "tomato",
+      "qty": 25,
+      "unit": "baskets",
+      "farmer": "Musa Danjuma",
+      "harvested": "2026-10-23T16:39:05.569Z",
+      "storage": "open",
+      "listing": null,
+      "sales": []
+    },
+    {
+      "id": 23,
+      "owner": 2,
+      "crop": "onion",
+      "qty": 30,
+      "unit": "bags",
+      "farmer": "Musa Danjuma",
+      "harvested": "2026-10-26T16:39:05.569Z",
+      "storage": "shade",
+      "listing": null,
+      "sales": []
+    },
+    {
+      "id": 24,
+      "owner": 11,
+      "crop": "yam",
+      "qty": 60,
+      "unit": "tubers",
+      "farmer": "Hauwa Musa",
+      "harvested": "2026-10-17T16:39:05.569Z",
+      "storage": "shade",
+      "listing": null,
+      "sales": []
+    },
+    {
+      "id": 25,
+      "owner": 11,
+      "crop": "tomato",
+      "qty": 30,
+      "unit": "baskets",
+      "farmer": "Danladi Gyang",
+      "harvested": "2026-10-25T02:15:05.569Z",
+      "storage": "basket",
+      "listing": null,
+      "sales": []
+    },
+    {
+      "id": 26,
+      "owner": 11,
+      "crop": "maize",
+      "qty": 40,
+      "unit": "bags",
+      "farmer": "Esther Dung",
+      "harvested": "2026-10-24T16:39:05.569Z",
+      "storage": "open",
+      "listing": null,
+      "sales": []
+    }
+  ],
+  "sensors": {}
 }

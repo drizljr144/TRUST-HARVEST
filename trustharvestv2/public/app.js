@@ -38,21 +38,21 @@ const IMG = [['tomato','tomatoes'],['potato','potatoes'],['maize','maize'],['cor
 function photoFor(crop) { const c = String(crop).toLowerCase(); const m = IMG.find(([k]) => c.includes(k)); return m ? `/images/${m[1]}.webp` : null; }
 function photo(crop) {
   const box = h('div', { class: 'photo' });
-  const ph = () => box.replaceChildren(h('div', { class: 'ph', 'aria-hidden': 'true' }, (crop || '?')[0].toUpperCase()));
+  const ph = () => box.replaceChildren(h('div', { class: 'ph', 'aria-hidden': 'true' }, emojiFor(crop) || (crop || '?')[0].toUpperCase()));
   const src = photoFor(crop);
-  if (!src) { ph(); return box; }
+  if (!src || lite()) { ph(); return box; }
   const img = h('img', { src, alt: crop + ' for sale', loading: 'lazy' });
   img.addEventListener('error', ph);
   box.append(img); return box;
 }
 
 const SLIDES = [
-  ['hero1', 'Sell produce. Get paid. Every time.', 'Buyer money is held safely until delivery is confirmed.', 'A smiling tomato farmer with baskets of harvest', '50% 30%', 'Get paid.'],
-  ['hero2', 'From the farm gate to the buyer, safely.', 'Track every order from payment to delivery.', 'A man leading a donkey with a load past a warehouse', '75% 50%', 'safely.'],
-  ['hero3', 'Every harvest deserves its full price.', 'No more chasing buyers for your money.', 'Hands gripping a wooden pestle over harvested grain', '55% 50%', 'full price.'],
-  ['hero4', 'Grow more. Get paid faster.', 'Verified buyers and protected payments.', 'A farmer walking through rows of vines in a greenhouse', '45% 40%', 'paid faster.'],
-  ['hero5', 'Market day, without the middleman\u2019s cut.', 'Sell directly to buyers across Plateau.', 'A trader sorting okra at an open-air market', '50% 35%', 'without the middleman\u2019s cut.'],
-  ['hero6', 'Trust is the first thing we harvest.', 'Every completed trade builds your trust score.', 'A farmer in his field holding fresh tomatoes', '45% 30%', 'Trust is the first thing we harvest.']
+  ['hero1', 'Sell it before it spoils.', 'Know how many days your harvest has left, and get paid safely.', 'A smiling tomato farmer with baskets of harvest', '50% 30%', 'before it spoils.'],
+  ['hero2', 'Every day counts after harvest.', 'A freshness clock for every crate, basket and bag.', 'A man leading a donkey with a load past a warehouse', '75% 50%', 'counts'],
+  ['hero3', 'Know before it wilts.', 'Alerts by SMS, in English, Pidgin or Hausa.', 'Hands gripping a wooden pestle over harvested grain', '55% 50%', 'wilts.'],
+  ['hero4', 'The right storage saves the harvest.', 'See which method keeps your produce fresh longest.', 'A farmer walking through rows of vines in a greenhouse', '45% 40%', 'saves the harvest.'],
+  ['hero5', 'Sell fast, at a fair price.', 'Smart price tips as your produce ages, no guesswork.', 'A trader sorting okra at an open-air market', '50% 35%', 'fair price.'],
+  ['hero6', 'Less waste. More income.', 'Surplus goes to processors instead of the bin.', 'A farmer in his field holding fresh tomatoes', '45% 30%', 'More income.']
 ];
 let slideTimer = null;
 function stopSlides() { clearInterval(slideTimer); slideTimer = null; }
@@ -67,7 +67,7 @@ function slideshow() {
     const actions = h('div', { class: 'hero-actions' },
       h('button', { class: 'hero-cta primary', onclick: () => goToAuth(true) }, 'Create an account'),
       h('button', { class: 'hero-cta secondary', onclick: () => goToAuth(false) }, 'Log in'));
-    const proof = h('div', { class: 'hero-proof' }, 'Verified farmers · Escrow-protected · Works on any phone');
+    const proof = h('div', { class: 'hero-proof' }, 'Alerts by SMS · Works on any phone · Escrow-protected');
     const cap = h('div', { class: 'cap', 'aria-live': n === 0 ? 'polite' : 'off' }, title, h('p', {}, s), actions, proof);
     const photo = h('div', { class: 'slide-photo' },
       h('div', { class: 'slide-image' }, img),
@@ -82,8 +82,8 @@ function slideshow() {
           onclick: () => go(thumbnailIndex, true)
         }, thumbnail);
       })),
-      h('div', { class: 'hero-demo-card payment' }, h('b', {}, 'Payment held in escrow: ₦36,000'), h('small', {}, 'Demo')),
-      h('div', { class: 'hero-demo-card trust-score' }, h('b', {}, 'Trust score 92 · Verified farmer'), h('small', {}, 'Demo')));
+      h('div', { class: 'hero-demo-card payment' }, h('b', {}, 'Tomatoes: about 2 days left'), h('small', {}, 'Demo')),
+      h('div', { class: 'hero-demo-card trust-score' }, h('b', {}, 'Price tip: lower by 15% today'), h('small', {}, 'Demo')));
     return h('div', { class: 'slide' + (n === 0 ? ' on' : ''), 'aria-hidden': n !== 0 }, photo, cap);
   });
   const bar = h('div', { class: 'bar' });
@@ -133,7 +133,7 @@ const STEPS = [['Buyer pays into escrow', 'The money leaves the buyer and is hel
 function landing() {
   return h('div', {},
     h('section', { class: 'landing-section' },
-      h('h2', {}, 'How escrow protects you'),
+      h('h2', {}, 'How TrustHarvest works'),
       h('div', { class: 'steps' }, STEPS.map(([t, d], n) => h('div', { class: 'card' }, h('b', {}, (n + 1) + '. ' + t), h('span', { class: 'mute' }, d)))),
     ),
     h('section', { class: 'landing-section' },
@@ -143,8 +143,8 @@ function landing() {
         d.querySelector('img').addEventListener('error', () => d.remove()); return d; })),
     ),
     h('section', { class: 'landing-section' },
-      h('h2', {}, 'Your trust score'),
-      h('div', { class: 'card' }, 'Every completed trade raises your score. Disputes and cancelled orders lower it. A high score tells buyers and farmers they can trade with you.'),
+      h('h2', {}, 'Your days-held record'),
+      h('div', { class: 'card' }, 'Every sale records how long your produce lasted and how you stored it, so you learn which storage method works best. Your trust score still grows with every completed trade.'),
       h('p', { class: 'mute' }, 'Demo: payments are simulated. Built for HackJos 2026.')));
 }
 
@@ -156,17 +156,17 @@ function authView() {
       ...field('Phone number', 'phone', 'tel'),
       ...field('Password', 'pw', 'password'),
       reg ? [h('label', { for: 'role' }, 'I am a'), h('select', { id: 'role' },
-        h('option', { value: 'farmer' }, 'Farmer'), h('option', { value: 'buyer' }, 'Buyer'))] : [],
+        h('option', { value: 'farmer' }, 'Farmer'), h('option', { value: 'agent' }, 'Cooperative agent'), h('option', { value: 'buyer' }, 'Buyer'))] : [],
       note('auth'),
       h('div', { class: 'acts' },
         h('button', { onclick: () => run('auth', async () => {
           const r = await api(reg ? '/register' : '/login', 'POST', { name: reg ? val('name') : '',
             phone: val('phone'), password: val('pw'), role: reg ? val('role') : '' });
-          token = r.token; sessionStorage.setItem('th', token); tab = 'market';
+          token = r.token; sessionStorage.setItem('th', token); tab = ['farmer', 'agent'].includes(r.user.role) ? 'fresh' : 'market';
         }) }, reg ? 'Create account' : 'Log in'),
         h('button', { class: 'alt', onclick: () => { msg = { mode: reg ? 'login' : 'register' }; render(); } },
           reg ? 'I have an account' : 'Create an account')),
-      h('p', { class: 'mute' }, 'Demo logins (password pass1234): farmer 0803000001, buyer 0803000003. Admin 0800000000 uses admin password pass1234.')),
+      h('p', { class: 'mute' }, 'Demo logins (password pass1234): farmer 0803000001, cooperative agent 0803000004, buyer 0803000003, admin 0800000000.')),
     landing());
 }
 
@@ -178,24 +178,18 @@ async function load() {
   if (tab === 'market') listings = await api('/listings');
   if (tab === 'orders') orders = await api('/orders');
   if (tab === 'admin') flags = await api('/fraud-flags');
+  await loadFresh();
 }
 
 function marketView() {
-  const out = [h('h2', {}, me.role === 'farmer' ? 'Your produce on the market' : 'Fresh produce')];
-  if (me.role === 'farmer') out.push(h('div', { class: 'card' },
-    h('b', {}, 'List new produce'),
-    ...field('Crop', 'crop'), ...field('Quantity', 'qty', 'number'), ...field('Unit (baskets, bags...)', 'unit'),
-    ...field('Price per unit (₦)', 'price', 'number'), ...field('Location', 'loc'), note('list'),
-    h('button', { onclick: () => run('list', async () => {
-      await api('/listings', 'POST', { crop: val('crop'), qty: val('qty'), unit: val('unit'), price: val('price'), loc: val('loc') });
-      listings = await api('/listings');
-    }) }, 'List produce')));
+  const out = [h('h2', {}, ['farmer', 'agent'].includes(me.role) ? 'Your produce on the market' : 'Fresh produce')];
+  if (['farmer', 'agent'].includes(me.role)) out.push(h('div', { class: 'card mute' }, '🌱 List produce from the Fresh tab, so its freshness clock travels with the listing.'));
   if (!listings.length) out.push(h('p', { class: 'mute' }, 'No produce listed yet. Farmers can add some above.'));
   out.push(h('input', { type: 'search', placeholder: 'Search crops', value: q, 'aria-label': 'Search crops', oninput: e => { q = e.target.value; render(); } }));
   out.push(h('div', { class: 'chips' }, ['All', 'Tomatoes', 'Potatoes', 'Yam', 'Maize', 'Pepper', 'Onions'].map(c => h('button', { class: filter === c ? 'on' : '', onclick: () => { filter = c; render(); } }, c))));
   const shown = listings.filter(l => (filter === 'All' || l.crop.toLowerCase().includes(filter.toLowerCase().replace(/e?s$/, ''))) && l.crop.toLowerCase().includes(q.toLowerCase()));
   shown.forEach(l => out.push(h('div', { class: 'card' },
-    photo(l.crop),
+    photo(l.crop), freshChip(l.fresh),
     h('div', { class: 'row' }, h('div', {}, h('b', {}, l.crop), h('div', { class: 'mute' }, `${l.qty} ${l.unit} left · ${l.loc || 'Plateau'}`)),
       h('div', { class: 'price' }, naira(l.price) + ' / ' + l.unit)),
     h('div', { class: 'row', style: 'margin-top:8px' }, h('span', {}, l.farmerName + ' '), verBadge(l.farmerVerified)),
@@ -256,20 +250,20 @@ function adminView() {
   return h('div', {}, out);
 }
 
+const VIEWS = { market: marketView, orders: ordersView, wallet: walletView, admin: adminView };
 async function render() {
   const app = $('#app'), nav = $('#nav');
   if (!token) {
     nav.hidden = true; $('#who').textContent = '';
-    if (!$('#hero').firstChild) $('#hero').replaceChildren(slideshow());
+    if (!$('#hero').firstChild && !lite()) $('#hero').replaceChildren(slideshow());
     app.replaceChildren(authView()); return;
   }
   stopSlides(); $('#hero').replaceChildren();
   try { if (!me) await refreshMe(); await load(); } catch { return; }
   $('#who').textContent = me.name;
-  const tabs = [['market', 'Market'], ['orders', 'Orders'], ['wallet', 'Wallet'], ...(me.role === 'admin' ? [['admin', 'Fraud']] : [])];
+  const tabs = tabsFor();
   nav.hidden = false;
   nav.replaceChildren(...tabs.map(([k, t]) => h('button', { class: tab === k ? 'on' : '', onclick: () => { tab = k; msg = {}; render(); } }, t)));
-  const v = { market: marketView, orders: ordersView, wallet: walletView, admin: adminView }[tab];
+  const v = VIEWS[tab] || marketView;
   app.replaceChildren(v());
 }
-render();
